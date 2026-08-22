@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>qTV | Login</title>
+	<style>
+		body {
+			margin: 0;
+			background: #000;
+		}
+		p {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			margin: 0;
+			font-family: Arial;
+			font-size: 5vh;
+			text-align: center;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<p id="main">Loading...</p>
+
+	<script>
+		const main = document.getElementById('main');
+		const key = window.location.search.slice(1);
+		localStorage.setItem('key', key);
+		main.innerText = 'Saved.';
+	</script>
+</body>
+</html>

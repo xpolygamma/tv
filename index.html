@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>qTV</title>
+	<style>
+:root {
+	--u: 1.2vw;
+
+	--bg: #47474977;
+	--bg-h: #6b6b6d77;
+	--border: #fafaff1a;
+	--border-h: #fafaff22;
+	--hover: #fafaff11;
+}
+*[hidden] {
+	display: none !important;
+}
+
+body {
+	margin: 0;
+	background: #000;
+	overflow: none;
+}
+body::-webkit-scrollbar {
+	display: none;
+}
+
+.glass {
+	height: var(--h);
+	background-color: var(--bg);
+	border: calc(0.07 * var(--h)) solid var(--border);
+	border-radius: calc(0.2 * var(--h));
+	transition: .2s;
+	box-sizing: border-box;
+
+	&:hover {
+		background-color: var(--bg-h);
+		border-color: var(--border-h);
+	}
+}
+
+.select {
+	display: grid;
+	grid-template-rows: 1fr 3fr;
+	height: var(--h);
+
+	.choice {
+		position: relative;
+		width: 100%;
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		
+		font-size: calc(0.4 * var(--h));
+		color: #fff;
+		text-align: left;
+		padding-left: calc(0.2 * var(--h));
+		
+		p {
+			width: 0;
+			white-space: nowrap;
+			margin-block-start: 0 !important;
+			margin-block-end: 0 !important;
+		}
+		svg {
+			position: absolute;
+			top: calc(0.05 * var(--h));
+			right: calc(0.05 * var(--h));
+			width: calc(0.8 * var(--h));
+			height: calc(0.8 * var(--h));
+
+			path {
+				stroke: #fff;
+			}
+		}
+	}
+	.options {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+		height: calc(3 * var(--h));
+		overflow-x: hidden;
+		overflow-y: scroll;
+		border-radius: calc(0.2 * var(--h));
+		background: var(--bg);
+		backdrop-filter: blur(calc(.2 * var(--h)));
+
+		.option {
+			position: relative;
+			width: 100%;
+			height: var(--h);
+			background: none;
+			border: none;
+			border-radius: 0;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			transition: .2s;
+			font-size: calc(0.4 * var(--h));
+			color: #fff;
+			text-align: left;
+			padding-left: calc(0.2 * var(--h));
+			white-space: nowrap;
+
+			&:hover {
+				background: var(--hover);
+			}
+		}
+	}
+}
+
+b {
+	font-weight: 700;
+	background: linear-gradient(to bottom, #70ff 40%, #a0f);
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent !important;
+	-webkit-text-fill-color: transparent !important;
+}
+#change-server {
+	width: calc(20 * var(--u));
+}
+#layout {
+	width: 100vw;
+	height: 100dvh;
+
+	display: flex;
+	flex-direction: column;
+}
+#iframe {
+	height: 100%;
+}
+#top h1, #url {
+	font-family: Arial;
+	font-size: calc(2 * var(--u));
+	margin: 0;
+	color: #fff;
+}
+#top h1::selection, #url::selection, b::selection {
+	background: #fff5;
+}
+#top {
+	display: flex;
+	align-items: center;
+	gap: calc(.5 * var(--u));
+
+	height: calc(6.1 * var(--u));
+	padding: calc(.5 * var(--u));
+	padding-right: calc(1 * var(--u));
+	box-sizing: border-box;
+	--h: calc(5 * var(--u));
+
+	h1 {
+		padding: calc(1 * var(--u));
+		padding-top: calc(1.01 * var(--u));
+		padding-bottom: 0;
+		text-align: center;
+	}
+}
+#url {
+	margin-left: auto;
+	text-align: right;
+}
+
+@media only screen and (min-aspect-ratio: 1/1) {
+	:root {
+		--u: 1vh;
+	}
+}
+	</style>
+</head>
+<body>
+	<main id="layout">
+		<div id="top">
+			<h1 class="glass">qTV</h1>
+			<div id="change-server" class="select">
+				<button class="choice glass" onclick="select(this)">
+					<p id="selected-server">Loading...</p>
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+				</button>
+				<div id="serverlist" class="options" hidden>
+				</div>
+			</div>
+			<p id="url">movie.bike?<b id="code">[ Loading... ]</b></p>
+		</div>
+		<iframe id="iframe" src="" frameborder="0" allowfullscreen allow="encrypted-media"></iframe>
+	</main>
+
+	<script>
+		function end() {
+			document.documentElement.innerHTML = '';
+			window.location.href = 'about:blank';
+		}
+
+		function select(ele) {
+			const options = ele.parentElement.querySelector('.options');
+			options.hidden = false;
+			window.addEventListener('pointerdown', e => {
+				if (!ele.contains(e.target) && !options.contains(e.target)) {
+					options.hidden = true;
+				}
+			}, { once: true });
+		}
+		window.addEventListener('blur', () => {
+			if (document.activeElement instanceof HTMLIFrameElement) {
+				document.querySelectorAll('.options').forEach(e => e.hidden = true);
+			}
+		});
+
+		/////
+
+		const key = localStorage.getItem('key');
+		if (!key && !window.cfg) {
+			localStorage.removeItem('key');
+			end();
+		}
+
+		/////
+
+		const parts = window.location.search.slice(1).split('-');
+		let code = parts[0].replace(/[^0-9]/g, '');
+		let db = 't';
+		if (parts[0].startsWith('tt')) {
+			db = 'i';
+			code = 'tt'+code;
+		}
+
+		const dbName = {
+			't': 'tmdb',
+			'i': 'imdb'
+		}[db];
+
+		let tv = {
+			is: false,
+			s: 0, e: 0
+		};
+		if (parts.length > 1) {
+			tv.is = true;
+			tv.s = parts[1].split('e')[0].replace(/[^0-9]/g, '');
+			tv.e = parts[1].split('e')[1].replace(/[^0-9]/g, '');
+		}
+		const link = code + (tv.is ? `-s${tv.s}e${tv.e}` : '');
+		document.getElementById('code').innerText = link
+
+		let SITES = [];
+		const ACCENT = '6400FF';
+
+		const serverlist = document.getElementById('serverlist');
+		const selected = document.getElementById('selected-server');
+		const iframe = document.getElementById('iframe');
+		function server(i) {
+			console.log('[server]', i);
+			serverlist.hidden = true;
+			selected.innerText = SITES[i][0];
+			iframe.src = SITES[i][1]
+				.replace('{id}', code)
+				.replace('{s}', tv.s)
+				.replace('{e}', tv.e)
+				.replace('{accent}', ACCENT)
+				.replace('{db}', dbName);
+		}
+
+		function init(sites) {
+			SITES.push(...sites.filter(s => s[0].includes(db)).map(s => [s[1], tv.is ? s[3] : s[2]]));
+			for (const [i, [name, url]] of SITES.entries()) {
+				const btn = document.createElement('button');
+				btn.classList.add('option');
+				btn.innerText = name;
+				btn.dataset.value = i;
+				btn.onclick = () => server(i);
+				serverlist.appendChild(btn);
+			}
+			server(0);
+		}
+
+		if (code)
+			if (window.cfg?.init) init(window.cfg?.init);
+			else {
+				fetch(window.cfg?.url || 'https://ubc.pythonanywhere.com/qtv', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ key })
+				}).then(r => r.json()).then(data => {
+					if (data.sites) init(data.sites);
+					else end();
+				}).catch(e => {
+					end();
+					console.error(e);
+				});
+			}
+	</script>
+</body>
+</html>

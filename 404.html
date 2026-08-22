@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>qTV | Redirecting...</title>
+	<style>
+		body {
+			margin: 0;
+			background: #000;
+		}
+		p {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			margin: 0;
+			font-family: Arial;
+			font-size: 5vh;
+			text-align: center;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<p>Redirecting...</p>
+
+	<script>
+		const parts = window.location.pathname.slice(1).split('/');
+		let code = null;
+		if (parts[0] === 'movie' || parts[0] === 'tv') code = parts[1].split('-')[0].replace(/[^0-9]/g, '');
+		if (parts[0] === 'title') code = 'tt'+parts[1].replace(/[^0-9]/g, '');
+
+		if (code) window.location.href = '/?'+code;
+	</script>
+</body>
+</html>
