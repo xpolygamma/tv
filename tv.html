@@ -225,27 +225,10 @@ b {
 
 		if (!code) window.location.href = '/';
 
-		// let key = localStorage.getItem('key');
-		// while (!key) key = prompt('Enter key:');
-		// localStorage.setItem('key', key);
-
 		function api(url) {
-			// let key = localStorage.getItem('key');
-			// while (!key) key = prompt('Enter key:');
-			// localStorage.setItem('key', key);
-			// {
-			// 	method: 'POST',
-			// 	headers: { 'Content-Type': 'application/json' },
-			// 	body: JSON.stringify({ key })
-			// }
-
-			return fetch((window.cfg?.url || 'https://api.movie.bike')+url).then(r => r.json()).then(r => {
-				if (r.key === false) {
-					localStorage.removeItem('key');
-					document.documentElement.innerHTML = '';
-					window.location.href = 'about:blank';
-				}
-			}).catch(console.error);
+			return fetch((window.cfg?.url || 'https://api.movie.bike')+url)
+				.then(r => r.json())
+				.catch(console.error);
 		}
 
 		function select(ele) {

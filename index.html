@@ -318,14 +318,18 @@ b {
 			// 	headers: { 'Content-Type': 'application/json' },
 			// 	body: JSON.stringify({ key })
 			// }
+			// .then(r => {
+			// 	if (r.key === false) {
+			// 		localStorage.removeItem('key');
+			// 		document.documentElement.innerHTML = '';
+			// 		window.location.href = 'about:blank';
+			// 	}
+			// 	return r;
+			// }
 
-			return fetch((window.cfg?.url || 'https://api.movie.bike')+url).then(r => r.json()).then(r => {
-				if (r.key === false) {
-					localStorage.removeItem('key');
-					document.documentElement.innerHTML = '';
-					window.location.href = 'about:blank';
-				}
-			}).catch(console.error);
+			return fetch((window.cfg?.url || 'https://api.movie.bike')+url)
+				.then(r => r.json())
+				.catch(console.error);
 		}
 
 		function select(ele) {
@@ -353,10 +357,12 @@ b {
 			}
 
 			const resp = await api(`/search?q=${encodeURIComponent(query)}&p=${page || 1}`);
+			console.log(resp);
 			if (resp?.success) {
 				if (!page) resultsList.innerHTML = '';
 				else {}
 
+				console.log(resp);
 				resp.results.forEach(r => {
 					const t = document.createElement('a');
 					t.classList.add('title');
