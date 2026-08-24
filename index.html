@@ -440,6 +440,7 @@ b {
 		if (code)
 			if (window.cfg?.init) init(window.cfg?.init);
 			else api('/list').then(data => init(data.list));
+		else search();
 	</script>
 </body>
 </html>
