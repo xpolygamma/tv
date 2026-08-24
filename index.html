@@ -166,11 +166,6 @@ b {
 	text-align: right;
 }
 
-@media only screen and (min-aspect-ratio: 1/1) {
-	:root {
-		--u: 1vh;
-	}
-}
 
 
 #home {
@@ -215,52 +210,82 @@ b {
 		}
 	}
 	#results {
-		width: 85%;
+		width: 90%;
 		height: 100%;
 		margin-top: calc(1 * var(--u));
 		margin-bottom: calc(5 * var(--u));
 		box-sizing: border-box;
 
-		border: 1px solid red;
+		/* border: 1px solid red; */
 
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+		gap: calc(1 * var(--u));
 
 		.title {
 			width: 100%;
+			text-decoration: none;
 
 			img {
 				width: 100%;
 				aspect-ratio: 2/3;
+				border-radius: calc(.5 * var(--u));
+				transition: .2s;
+			}
+			&:hover img {
+				transform: scale(1.02);
+			}
+			h2, p {
+				margin: 0;
+				font-family: Arial;
+				color: #fff;
+
+				&::selection {
+					background: #fff5;
+				}
+			}
+			h2 {
+				font-size: calc(2 * var(--u));
+				margin-top: calc(.5 * var(--u));
+			}
+			p {
+				font-size: calc(1.5 * var(--u));
+				margin-top: calc(.5 * var(--u));
 			}
 		}
 	}
 }
 
-
-
+@media only screen and (min-aspect-ratio: 1/1) {
+	:root {
+		--u: 1vh;
+	}
+	#home #results {
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	}
+}
 	</style>
 </head>
 <body>
 	<div id="home">
-		<h1>hello.world</h1>
+		<h1>movie.bike</h1>
 		<input type="text" id="search" placeholder="Search...">
 		<div id="results">
-			<div class="title">
+			<a class="title" href="#">
 				<img src="https://media.themoviedb.org/t/p/w220_and_h330_face/tV712n7bMaRuaKyltFl65HPNRiP.jpg">
 				<h2>Spider-Man: Brand New Day</h2>
 				<p>July 30, 2026</p>
-			</div>
-			<div class="title">
+			</a>
+			<a class="title" href="#">
 				<img src="https://media.themoviedb.org/t/p/w220_and_h330_face/tV712n7bMaRuaKyltFl65HPNRiP.jpg">
 				<h2>Spider-Man: Brand New Day</h2>
 				<p>July 30, 2026</p>
-			</div>
-			<div class="title">
+			</a>
+			<a class="title" href="#">
 				<img src="https://media.themoviedb.org/t/p/w220_and_h330_face/tV712n7bMaRuaKyltFl65HPNRiP.jpg">
 				<h2>Spider-Man: Brand New Day</h2>
 				<p>July 30, 2026</p>
-			</div>
+			</a>
 		</div>
 	</div>
 
@@ -311,6 +336,36 @@ b {
 				document.querySelectorAll('.options').forEach(e => e.hidden = true);
 			}
 		});
+
+		const resultsList = document.getElementById('results');
+		async function search(query, page=null) {
+			const resp = await fetch(`https://api.movie.bike/search?q=${encodeURIComponent(query)}&p=${page || 1}`)
+				.then(r => r.json())
+				.catch(console.error);
+
+			if (resp?.success) {
+				if (!page) resultsList.innerHTML = '';
+				else {}
+
+				resp.results.forEach(r => {
+					const t = document.createElement('a');
+					t.classList.add('title');
+					t.href = `/?${r[0]}`;
+
+					const img = document.createElement('img');
+					img.src = `https://media.themoviedb.org/t/p/w220_and_h330_face${r[2]}`;
+					const h2 = document.createElement('h2');
+					h2.innerText = r[1];
+					const p = document.createElement('p');
+					p.innerText = r[4];
+					t.replaceChildren(img, h2, p);
+
+					resultsList.appendChild(t);
+				});
+
+				if (resp.more) {}
+			}
+		}
 
 		/////
 
