@@ -5,7 +5,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>qTV</title>
 	
-	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap" rel="stylesheet">
 	<style>
 :root {
 	--u: 1.2vw;
@@ -124,6 +123,12 @@ b {
 #change-server {
 	width: calc(20 * var(--u));
 }
+#change-season {
+	width: calc(25 * var(--u));
+}
+#change-episode {
+	width: calc(10 * var(--u));
+}
 #player {
 	width: 100vw;
 	height: 100dvh;
@@ -169,115 +174,15 @@ b {
 	text-align: right;
 }
 
-#home {
-	width: 100vw;
-	height: 100dvh;
-
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-
-	h1 {
-		font-size: calc(5 * var(--u));
-		color: #fff;
-		font-family: "Syne";
-		font-weight: 800;
-
-		&::selection {
-			background: #fff5;
-		}
-	}
-	#search {
-		width: 90%;
-		font-size: calc(4 * var(--u));
-		padding: calc(2 * var(--u)) calc(3 * var(--u));
-		box-sizing: border-box;
-
-		color: #fff;
-
-		background: #141415;
-		border: calc(.2 * var(--u)) solid #333335;
-
-		border-radius: calc(10 * var(--u));
-		transition: .4s;
-
-		&:focus {
-			outline: none;
-			border-color: #50f;
-		}
-		&::selection {
-			background: #50f;
-			color: #fff;
-		}
-	}
-	#results {
-		width: 90%;
-		height: 100%;
-		margin-top: calc(1 * var(--u));
-		margin-bottom: calc(5 * var(--u));
-		box-sizing: border-box;
-
-		/* border: 1px solid red; */
-
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-		gap: calc(1 * var(--u));
-
-		.title {
-			width: 100%;
-			text-decoration: none;
-
-			img {
-				width: 100%;
-				aspect-ratio: 2/3;
-				border-radius: calc(.5 * var(--u));
-				transition: .2s;
-			}
-			&:hover img {
-				transform: scale(1.02);
-			}
-			h2, p {
-				margin: 0;
-				font-family: Arial;
-				color: #fff;
-
-				white-space: pre-wrap;
-				word-wrap: break-word;
-
-				&::selection {
-					background: #fff5;
-				}
-			}
-			h2 {
-				font-size: calc(2 * var(--u));
-				margin-top: calc(.5 * var(--u));
-			}
-			p {
-				font-size: calc(1.5 * var(--u));
-				margin-top: calc(.5 * var(--u));
-			}
-		}
-	}
-}
-
 @media only screen and (min-aspect-ratio: 1/1) {
 	:root {
 		--u: 1vh;
-	}
-	#home #results {
-		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	}
 }
 	</style>
 </head>
 <body>
-	<div id="home" hidden>
-		<h1>movie.bike</h1>
-		<input type="text" id="search" oninput="debounce()" placeholder="Search...">
-		<div id="results"></div>
-	</div>
-
-	<div id="player" hidden>
+	<div id="player">
 		<div id="top">
 			<a href="/"><h1 class="glass">qTV</h1></a>
 			<div id="change-server" class="select">
@@ -288,7 +193,23 @@ b {
 				<div id="serverlist" class="options" hidden>
 				</div>
 			</div>
-			<p id="url">movie.bike?<b id="code">[ Loading... ]</b></p>
+			<div id="change-season" class="select">
+				<button class="choice glass" onclick="select(this)">
+					<p id="selected-season"></p>
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+				</button>
+				<div id="seasonlist" class="options" hidden>
+				</div>
+			</div>
+			<div id="change-episode" class="select">
+				<button class="choice glass" onclick="select(this)">
+					<p id="selected-episode"></p>
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+				</button>
+				<div id="episodelist" class="options" hidden>
+				</div>
+			</div>
+			<p id="url">movie.bike/tv?<b id="code">[ Loading... ]</b></p>
 		</div>
 		<iframe id="iframe" src="" frameborder="0" allowfullscreen allow="encrypted-media"></iframe>
 	</div>
@@ -302,23 +223,23 @@ b {
 			code = 'tt'+code;
 		}
 
-		if (code) document.getElementById('player').hidden = false;
-		else document.getElementById('player').hidden = false;
+		if (!code) window.location.href = '/';
 
-		let key = localStorage.getItem('key');
-		while (!key) key = prompt('Enter key:');
-		localStorage.setItem('key', key);
+		// let key = localStorage.getItem('key');
+		// while (!key) key = prompt('Enter key:');
+		// localStorage.setItem('key', key);
 
 		function api(url) {
-			let key = localStorage.getItem('key');
-			while (!key) key = prompt('Enter key:');
-			localStorage.setItem('key', key);
+			// let key = localStorage.getItem('key');
+			// while (!key) key = prompt('Enter key:');
+			// localStorage.setItem('key', key);
+			// {
+			// 	method: 'POST',
+			// 	headers: { 'Content-Type': 'application/json' },
+			// 	body: JSON.stringify({ key })
+			// }
 
-			return fetch((window.cfg?.url || 'https://api.movie.bike')+url, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ key })
-			}).then(r => r.json()).then(r => {
+			return fetch((window.cfg?.url || 'https://api.movie.bike')+url).then(r => r.json()).then(r => {
 				if (r.key === false) {
 					localStorage.removeItem('key');
 					document.documentElement.innerHTML = '';
@@ -342,49 +263,6 @@ b {
 			}
 		});
 
-		const searchInput = document.getElementById('search');
-		const resultsList = document.getElementById('results');
-		async function search(iquery=null, page=null) {
-			const query = iquery || searchInput.value;
-			if (!query) {
-				if (!page) resultsList.innerHTML = '';
-				return;
-			}
-
-			const resp = await api(`/search?q=${encodeURIComponent(query)}&p=${page || 1}`);
-			if (resp?.success) {
-				if (!page) resultsList.innerHTML = '';
-				else {}
-
-				resp.results.forEach(r => {
-					const t = document.createElement('a');
-					t.classList.add('title');
-					t.href = `/${r[3] === 'tv' ? 'tv' : ''}?${r[0]}`;
-
-					const img = document.createElement('img');
-					if (r[2]) img.src = `https://media.themoviedb.org/t/p/w220_and_h330_face${r[2]}`;
-					const h2 = document.createElement('h2');
-					h2.innerText = r[1];
-					const p = document.createElement('p');
-					if (r[4]) p.innerText = new Date(r[4]).toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric'
-					});
-					t.replaceChildren(img, h2, p);
-
-					resultsList.appendChild(t);
-				});
-
-				if (resp.more) {}
-			}
-		}
-		let searchRequest;
-		function debounce() {
-			clearTimeout(searchRequest);
-			searchRequest = setTimeout(search, 400);
-		}
-
 		/////
 
 		const dbName = {
@@ -392,7 +270,15 @@ b {
 			'i': 'imdb'
 		}[db];
 
-		document.getElementById('code').innerText = code;
+		let tv = {
+			s: 0, e: 0,
+			data: null
+		};
+		if (parts.length > 1) {
+			tv.s = parts[1].split('e')[0].replace(/[^0-9]/g, '');
+			tv.e = parts[1].split('e')[1].replace(/[^0-9]/g, '');
+		}
+		document.getElementById('code').innerText = code + `-s${tv.s}e${tv.e}`;
 
 		let SITES = [];
 		const ACCENT = '6400FF';
@@ -406,20 +292,26 @@ b {
 			selected.innerText = SITES[i][0];
 			iframe.src = SITES[i][1]
 				.replace('{id}', code)
+				.replace('{s}', tv.s)
+				.replace('{e}', tv.e)
 				.replace('{accent}', ACCENT)
 				.replace('{db}', dbName);
 			curserver = i;
 		}
 
 		async function init(sites) {
-			SITES.push(...sites.filter(s => s[0].includes(db)).map(s => [s[1], s[2]]));
+			SITES.push(...sites.filter(s => s[0].includes(db)).map(s => [s[1], s[3]]));
 			initList(serverlist, SITES.entries(), s => s[1][0], s => s[0], server, true);
+
+			await checkTV();
+
 			server(0);
 		}
 
 		function initList(list, array, name, value, func, append=false) {
 			if (!append) list.innerHTML = '';
 			for (const i of array) {
+				console.log(i, name(i), value(i));
 				const btn = document.createElement('button');
 				btn.classList.add('option');
 				btn.innerText = name(i);
@@ -428,6 +320,42 @@ b {
 				btn.onclick = () => func(v);
 				list.appendChild(btn);
 			}
+		}
+
+		const seasonlist = document.getElementById('seasonlist');
+		const episodelist = document.getElementById('episodelist');
+		async function checkTV() {
+			const resp = await api(`https://api.movie.bike/series?${code}`);
+			if (resp?.success && resp.tv) {
+				tv.data = resp.seasons;
+				initList(seasonlist, resp.seasons, s => s[1], s => s[0], changeSeason);
+				
+				if (!tv.s || !tv.e) {
+					tv.s = Math.min(...resp.seasons.map(s => s[0]).filter(n => n>=1));
+					tv.e = null;
+				}
+
+				changeSeason(tv.s);
+			}
+		}
+
+		function changeSeason(s) {
+			if (!tv.data) return;
+			seasonlist.hidden = true;
+			const oldtvs = tv.s;
+			tv.s = s;
+			document.getElementById('selected-season').innerText = `S${s}`;
+			initList(episodelist, Array.from({ length: tv.data[tv.s][2] }, (_,n)=>n+1), e => `E${e}`, e => e, changeEpisode);
+			changeEpisode(oldtvs === s && tv.e && tv.e <= tv.data[tv.s][2] ? tv.e : 1);
+		}
+		function changeEpisode(e) {
+			if (!tv.data) return;
+			episodelist.hidden = true;
+			tv.e = e;
+			document.getElementById('selected-episode').innerText = `E${e}`;
+			document.getElementById('code').innerText = code + `-s${tv.s}e${tv.e}`;
+			// url...
+			server(curserver);
 		}
 
 		if (code)
