@@ -315,7 +315,10 @@ b {
 			code = 'tt'+code;
 		}
 
-		if (code) document.getElementById('player').hidden = false;
+		if (code) {
+			document.getElementById('player').hidden = false;
+			document.getElementById('snow').hidden = false;
+		}
 		else document.getElementById('home').hidden = false;
 
 		// let key = localStorage.getItem('key');
