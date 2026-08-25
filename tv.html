@@ -308,7 +308,7 @@ b {
 		const seasonlist = document.getElementById('seasonlist');
 		const episodelist = document.getElementById('episodelist');
 		async function checkTV() {
-			const resp = await api(`https://api.movie.bike/series?${code}`);
+			const resp = await api(`/series?${code}`);
 			if (resp?.success && resp.tv) {
 				tv.data = resp.seasons;
 				initList(seasonlist, resp.seasons, s => s[1], s => s[0], changeSeason);
