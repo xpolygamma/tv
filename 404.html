@@ -31,7 +31,7 @@
 		if (parts[0] === 'movie' || parts[0] === 'tv') code = parts[1].split('-')[0].replace(/[^0-9]/g, '');
 		if (parts[0] === 'title') code = 'tt'+parts[1].replace(/[^0-9]/g, '');
 
-		if (code) window.location.href = '/?'+code;
+		if (code) window.location.href = `/${parts[0] === 'tv' ? 'tv' : ''}?`+code;
 	</script>
 </body>
 </html>
