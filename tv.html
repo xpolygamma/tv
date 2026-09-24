@@ -326,7 +326,7 @@ b {
 			const oldtvs = tv.s;
 			tv.s = s;
 			document.getElementById('selected-season').innerText = `S${s}`;
-			const eps = tv.data.find(e => e[0] === tv.s) || 1;
+			const eps = tv.data.find(e => e[0] === tv.s)?.[2] || 1;
 			initList(episodelist, Array.from({ length: eps }, (_,n)=>n+1), e => `E${e}`, e => e, changeEpisode);
 			changeEpisode(oldtvs === s && tv.e && tv.e <= eps ? tv.e : 1);
 		}
