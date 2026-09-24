@@ -312,12 +312,10 @@ b {
 			if (resp?.success && resp.tv) {
 				tv.data = resp.seasons;
 				initList(seasonlist, resp.seasons, s => s[1], s => s[0], changeSeason);
-				
 				if (!tv.s || !tv.e) {
 					tv.s = Math.min(...resp.seasons.map(s => s[0]).filter(n => n>=1));
 					tv.e = null;
 				}
-
 				changeSeason(tv.s);
 			}
 		}
