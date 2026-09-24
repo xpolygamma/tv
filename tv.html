@@ -332,6 +332,7 @@ b {
 			initList(episodelist, Array.from({ length: eps }, (_,n)=>n+1), e => `E${e}`, e => e, changeEpisode);
 			changeEpisode(oldtvs === s && tv.e && tv.e <= eps ? tv.e : 1);
 		}
+		
 		function changeEpisode(e) {
 			if (!tv.data) return;
 			episodelist.hidden = true;
